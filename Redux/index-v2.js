@@ -1,4 +1,5 @@
-//const form = document.getElementById("form")[0];
+//video redux y manejo del form  minuto 9:30
+const form = document.getElementsByTagName("form")[0];
 /**@type {HTMLInputElement} */
 const inputCodigo = document.getElementById("codigo");
 /**@type {HTMLInputElement} */
@@ -25,7 +26,7 @@ const preloadedState = {
 
 const reducer = (state, action) => {
 
-    if (action.type == "producto-agregado") {
+    if (action.type === "producto-agregado") {
         indice++;
         const producto = action.payload;
         const codigo = indice;
@@ -43,7 +44,7 @@ const reducer = (state, action) => {
         };
     }
 
-    if (action.type == "producto-modificado") {
+    if (action.type === "producto-modificado") {
         const producto = action.payload;
         const total = producto.cantidad * producto.precio;
         const productos = state.productos.slice();//crea una copia del arreglo original
@@ -57,10 +58,9 @@ const reducer = (state, action) => {
             ...state,
             productos
         }
-
     }
 
-    if (action.type == "producto-eliminado") {
+    if (action.type === "producto-eliminado") {
         const codigo = action.payload.codigo;
         const productos = state.productos.filter(item => item.codigo !== codigo);
 
@@ -71,6 +71,14 @@ const reducer = (state, action) => {
 
     }
 
+    if(action.type === "producto-seleccionado")
+    {
+        const codigo = action.payload.codigo;
+        return {
+            ...state,
+            producto: state.productos.find(x => x.codigo===codigo)
+        }
+    }
 
     return state;
 }
@@ -123,6 +131,18 @@ function renderTable(productos) {
             });
         });
 
+        editar.addEventListener("click", (event) => {
+            event.preventDefault();
+            console.log('estamos en el evento editar');
+            store.dispatch({
+                type: "producto-seleccionado",
+                payload: {
+                    codigo: item.codigo
+                }
+            });
+        });
+
+
         return tr;
     });
 
@@ -139,7 +159,6 @@ function renderTable(productos) {
     precioTotalElement.innerText = precioTotal;
     granTotalElement.innerText = granTotal;
 
-
     function sum(elementos,selector) {
         return elementos
             .map(selector)
@@ -149,7 +168,55 @@ function renderTable(productos) {
 
 }
 
+form.addEventListener("submit", onSubmit);
 
+/**
+ * 
+ * @param {Event} event 
+ */
+function onSubmit(event)
+{
+    event.preventDefault();
+
+    const data = new FormData(form);
+    const values = Array.from(data.entries());
+
+    const [frmCodigo, frmNombre, frmCantidad, frmPrecio, frmCategoria] = values;
+
+    const codigo = parseInt(frmCodigo[1]);
+    const nombre = frmNombre[1];
+    const cantidad = parseFloat(frmCantidad[1]);
+    const precio = parseFloat(frmPrecio[1]);
+    const categoria = parseInt(frmCategoria[1]);
+
+    if(codigo)
+    {
+        store.dispatch({
+            type:"producto-modificado",
+            payload: {
+                codigo,
+                nombre,
+                cantidad,
+                precio,
+                categoria
+            }
+        });
+    }
+    else
+    {
+        store.dispatch({
+            type:"producto-agregado",
+            payload: {
+                nombre,
+                cantidad,
+                precio,
+                categoria
+            }
+        });
+    }
+
+    form.reset();
+}
 
 store.dispatch({
     type: "producto-agregado",
