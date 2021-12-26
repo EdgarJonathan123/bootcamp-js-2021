@@ -77,13 +77,13 @@ function renderTable(productos) {
     tbody.appendChild(tr);
   });
 
-  const cantidadTotal = sum(productos, (x) => x.cantidad);
-  const precioTotal = sum(productos, (x) => x.precio);
-  const granTotal = sum(productos, (x) => x.total);
+  const cantidadTotal = sum(productos,x => x.cantidad);
+  const precioTotal   = sum(productos,x => x.precio);
+  const granTotal     = sum(productos,x => x.total);
 
   cantidadTotalElement.innerText = cantidadTotal;
-  precioTotalElement.innerText = precioTotal;
-  granTotalElement.innerText = granTotal;
+  precioTotalElement.innerText   = precioTotal;
+  granTotalElement.innerText     = granTotal;
 
   function sum(elementos, selector) {
     return elementos.map(selector).reduce((a, b) => a + b, 0);

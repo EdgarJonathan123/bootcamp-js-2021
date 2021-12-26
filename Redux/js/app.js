@@ -1,34 +1,36 @@
+//Logica en middleware
 const preloadedState = {
   producto: {},
   productos: [],
 };
 
+const middlewares = Redux.applyMiddleware(
+  loggerMiddleware,
+  agregarOModificarProductoMiddleware,
+  generadorCodigoProductoBuilder(0)
+);
 
-const middlewares = Redux.applyMiddleware(loggerMiddleware);
+const store = Redux.createStore(reducer, preloadedState, middlewares);
 
-const store = Redux.createStore(reducer, preloadedState,middlewares);
 
-let latestState;
+store.subscribe(dispatchOnChange(store,(state) =>{
+    ui.renderForm(state.producto);
+    ui.renderTable(state.productos);
+}));
 
-const unsuscribe = store.subscribe(() => {
-  let currentState = store.getState();
-  if (currentState != latestState) {
-    latestState = currentState;
-    ui.renderForm(currentState.producto);
-    ui.renderTable(currentState.productos);
-  }
-});
+function dispatchOnChange(store, dispatch) {
+  let latestState;
+  return function () {
+    let currentState = store.getState();
+    if (currentState != latestState) {
+      latestState = currentState;
+      dispatch(currentState);
+    }
+  };
+}
 
-ui.onFormSubmit = (producto) => {
-  if (producto.codigo) {
-    store.dispatch(productoModificado(producto));
-  } else {
-    store.dispatch(productoAgregado(producto));
-  }
-
-  store.dispatch(productoSeleccionado(null));
-};
-
+ui.onFormSubmit = (producto) =>
+  store.dispatch(agregarOModificarProducto(producto));
 ui.onEliminarClick = (codigo) => store.dispatch(productoEliminado(codigo));
-
 ui.onEditarClick = (codigo) => store.dispatch(productoSeleccionado(codigo));
+

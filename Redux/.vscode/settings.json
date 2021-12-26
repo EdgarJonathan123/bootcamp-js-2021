@@ -1,3 +1,5 @@
 {
-    "editor.renderWhitespace": "all"
+    "editor.renderWhitespace": "all",
+    "editor.lineNumbers": "relative",
+    "explorer.autoReveal": false,
 }
