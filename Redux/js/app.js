@@ -3,7 +3,10 @@ const preloadedState = {
   productos: [],
 };
 
-const store = Redux.createStore(reducer, preloadedState);
+
+const middlewares = Redux.applyMiddleware(loggerMiddleware);
+
+const store = Redux.createStore(reducer, preloadedState,middlewares);
 
 let latestState;
 
@@ -11,7 +14,6 @@ const unsuscribe = store.subscribe(() => {
   let currentState = store.getState();
   if (currentState != latestState) {
     latestState = currentState;
-    //console.log("estado: ", store.getState());
     ui.renderForm(currentState.producto);
     ui.renderTable(currentState.productos);
   }

@@ -1,8 +1,6 @@
-
 let indice = 0;
 
 const reducer = (state, action) => {
-
   if (action.type === "producto-agregado") {
     indice++;
     const producto = action.payload;
@@ -59,24 +57,40 @@ const reducer = (state, action) => {
 };
 
 const productoSeleccionado = (codigo) => ({
-    type:"producto-seleccionado",
-    payload: {codigo},
+  type: "producto-seleccionado",
+  payload: { codigo },
 });
 
 const productoEliminado = (codigo) => ({
-    type:"producto-eliminado",
-    payload: {codigo},
+  type: "producto-eliminado",
+  payload: { codigo },
 });
 
 const productoModificado = (payload) => ({
-    type:"producto-modificado",
-    payload,
+  type: "producto-modificado",
+  payload,
 });
 
-const productoAgregado= (payload) => ({
-    type:"producto-agregado",
-    payload,
+const productoAgregado = (payload) => ({
+  type: "producto-agregado",
+  payload,
 });
 
+//function loggerMiddleware(store){
+//    return function dispatchWrapper(next){
+//        return function actionHandler(action){
+//            next(action);
+//            const state  = store.getState();
+//            console.log("dispatching",action);
+//            console.log("state",state);
+//        }
+//    }
+//}
 
+const loggerMiddleware = (store) => (next) => (action) => {
+  console.log("dispatching", action);
+  const  result = next(action);
+  console.log("next state", store.getState());
+  return result;
+};
 
