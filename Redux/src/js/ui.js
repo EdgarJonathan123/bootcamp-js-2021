@@ -1,4 +1,4 @@
-const ui = {
+export const ui = {
     onFormSubmit: (data) =>{ },
     onEliminarClick: (codigo)=>{},
     onEditarClick: (codigo)=>{},
@@ -39,7 +39,7 @@ form.addEventListener("submit", (event) => {
 
 function renderTable(productos) {
   const filas = productos.map((item) => {
-    tr = document.createElement("tr");
+    let tr = document.createElement("tr");
     tr.innerHTML = `
             <td>${item.codigo}</td>
             <td>${item.nombre}</td>
