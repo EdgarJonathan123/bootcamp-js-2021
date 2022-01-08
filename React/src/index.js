@@ -1,15 +1,14 @@
-import React from "react"
-import ReactDom from "react-dom"
-import "./index.css"
-import logo from './react.png'
+import React from "react";
+import ReactDom from "react-dom";
+import { Provider } from "react-redux";
+import App from "./app";
+import store from './store';
 
-const container = document.getElementById("root");
-const App = ()=> (
-    <div className="app">
-        <h1> Hola React!!</h1>
-        <img  src={logo} />
-    </div>
-)
+const rootElement = document.getElementById("root");
 
-
-ReactDom.render(<App />,container);
+ReactDom.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  rootElement
+);
